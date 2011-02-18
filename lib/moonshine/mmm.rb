@@ -105,7 +105,7 @@ EOF
           :owner   => 'root',
           :mode    => '640'
 
-        unless mmm_options[:no_bind_address]
+        unless mmm_options[:bind_address_already_configured]
           file '/etc/mysql/conf.d/bind_address.conf',
             :ensure  => :present,
             :notify  => service('mysql'),
