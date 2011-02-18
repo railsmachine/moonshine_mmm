@@ -8,12 +8,13 @@ A Moonshine[http://github.com/railsmachine/moonshine] plugin for installing and 
 * Configure settings if needed in <tt>config/moonshine.yml</tt>
     :mmm:
       :enabled: true
-      :monitor: 10.0.4.173   # the ip address of the mmm monitor node
-      :db1:     10.0.4.183   # the ip address of db1
-      :db2:     10.0.4.184   # the ip address of db2
-      :writer:  10.0.4.220   # the ip address of writer VIP
-      :reader:  10.0.4.221   # the ip address of reader VIP
-      :ping:    10.0.0.1     # an ip address to ping to ensure network is up before doing crazy things
+      :monitor:   10.0.4.173   # the ip address of the mmm monitor node
+      :db1:       10.0.4.183   # the ip address of db1
+      :db2:       10.0.4.184   # the ip address of db2
+      :writer:    10.0.4.220   # the ip address of writer VIP
+      :reader:    10.0.4.221   # the ip address of reader VIP
+      :ping:      10.0.0.1     # an ip address to ping to ensure network is up before doing crazy things
+      :interface: eth1         # interface that the mmm_agent will use to connect to mysql (used to setup a mysql user)
 * Invoke the recipe(s) in your Moonshine manifest
     recipe :mmm_agent        # on the database hosts
     recipe :mmm_monitor      # on the mmm monitor host
