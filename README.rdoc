@@ -43,4 +43,36 @@ to the db servers:
     # mmm connection to mysql
     rules << "-A INPUT -s #{configuration[:mysql][:mmm][:monitor]} -p tcp -m tcp --dport 3306 -j ACCEPT"
     # mmm connection to the agent
-    rules << "-A INPUT -s #{configuration[:mysql][:mmm][:monitor]} -p tcp -m tcp --dport 9989 -j ACCEPT
+    rules << "-A INPUT -s #{configuration[:mysql][:mmm][:monitor]} -p tcp -m tcp --dport 9989 -j ACCEPT"
+
+==== Initial Setup
+
+Initially, <tt>mmm_control show</tt> indicates all hosts are in the <tt>AWAITING_RECOVERY</tt>
+state:
+
+    # mmm_control show
+      db1(192.168.0.11) master/AWAITING_RECOVERY. Roles:
+      db2(192.168.0.12) master/AWAITING_RECOVERY. Roles:
+
+MMM sets 'new' hosts to the <tt>AWAITING_RECOVERY</tt> state:
+
+    # tail /var/log/mysql-mmm/mmmd_mon.warn
+    ...
+    2009/10/28 23:15:28  WARN Detected new host 'db1': Setting its initial state to 'AWAITING_RECOVERY'. Use 'mmm_control set_online db1' to switch it online.
+    2009/10/28 23:15:28  WARN Detected new host 'db2': Setting its initial state to 'AWAITING_RECOVERY'. Use 'mmm_control set_online db2' to switch it online.
+    2009/10/28 23:15:28  WARN Detected new host 'db3': Setting its initial state to 'AWAITING_RECOVERY'. Use 'mmm_control set_online db3' to switch it online.
+    2009/10/28 23:15:28  WARN Detected new host 'db4': Setting its initial state to 'AWAITING_RECOVERY'. Use 'mmm_control set_online db4' to switch it online.
+
+You need to manually set the hosts online once, and then you're good:
+
+    # mmm_control set_online db1
+    OK: State of 'db1' changed to ONLINE. Now you can wait some time and check its new roles!
+    # mmm_control set_online db2
+    OK: State of 'db2' changed to ONLINE. Now you can wait some time and check its new roles!
+
+Now all is well!
+
+    # mmm_control show
+      db1(192.168.0.11) master/ONLINE. Roles: writer(192.168.0.13)
+      db2(192.168.0.12) master/ONLINE. Roles: reader(192.168.0.14)
+    # Role writer is assigned to it's preferred host db1.
