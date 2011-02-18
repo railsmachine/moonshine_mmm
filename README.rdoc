@@ -1,8 +1,6 @@
-= Moonshine Mmm
+= Moonshine MMM
 
-=== A plugin for Moonshine[http://github.com/railsmachine/moonshine]
-
-A plugin for installing and managing mysql_mmm[http://mysql-mmm.org].
+A Moonshine[http://github.com/railsmachine/moonshine] plugin for installing and managing mysql_mmm[http://mysql-mmm.org].
 
 === Instructions
 
@@ -25,3 +23,11 @@ A plugin for installing and managing mysql_mmm[http://mysql-mmm.org].
 We *strongly* recommend that you configure a firewall, since mysql mmm
 configures MySQL to listen on a public interface. moonshine_iptables[http://github.com/railsmachine/moonshine_iptables]
 is a great help here.
+
+If you use moonshine_iptables, make sure you allow traffic from the monitor
+to the db servers:
+
+    # mmm connection to mysql
+    rules << "-A INPUT -s #{configuration[:mysql][:mmm][:monitor]} -p tcp -m tcp --dport 3306 -j ACCEPT"
+    # mmm connection to the agent
+    rules << "-A INPUT -s #{configuration[:mysql][:mmm][:monitor]} -p tcp -m tcp --dport 9989 -j ACCEPT
