@@ -1,0 +1,39 @@
+active_master_role        writer
+
+<host default>
+  cluster_interface       eth1:0
+
+  pid_path                /var/run/mmm_agentd.pid
+  bin_path                /usr/lib/mysql-mmm/
+
+  replication_user        repl
+  replication_password    <%= database_environment[:password] %>
+
+  agent_user              mmm_agent
+  agent_password          <%= database_environment[:password] %>
+</host>
+
+<host db1>
+  ip                      <%= mmm_options[:db1] %>
+  mode                    master
+  peer                    db2
+</host>
+
+<host db2>
+  ip                      <%= mmm_options[:db2] %>
+  mode                    master
+  peer                    db1
+</host>
+
+<role writer>
+  hosts                   db1, db2
+  ips                     <%= mmm_options[:writer] %>
+  mode                    exclusive
+  prefer                  db1
+</role>
+
+<role reader>
+  hosts                   db1, db2
+  ips                     <%= mmm_options[:reader] %>
+  mode                    balanced
+</role>

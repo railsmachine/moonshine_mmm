@@ -1,0 +1,17 @@
+include mmm_common.conf
+
+<monitor>
+        ip                   127.0.0.1
+        pid_path             /var/run/mmm_mond.pid
+        bin_path             /usr/lib/mysql-mmm/
+        status_path          /var/lib/misc/mmm_mond.status
+        ping_ips             <%= mmm_options[:db1] %>, <%= mmm_options[:db2] %>, <%= mmm_options[:ping] %>
+        mode                 <%= mmm_options[:mode] || 'active' %>
+</monitor>
+
+<host default>
+        monitor_user         mmm_agent
+        monitor_password     <%= database_environment[:password] %>
+</host>
+
+debug 0
