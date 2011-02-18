@@ -6,7 +6,7 @@ A Moonshine[http://github.com/railsmachine/moonshine] plugin for installing and 
 
 * <tt>script/plugin install git://github.com/railsmachine/moonshine_mmm.git</tt>
 * Configure settings if needed in <tt>config/moonshine.yml</tt>
-  :mysql
+    :mysql
       :mmm:
         :enabled: true
         :monitor:   10.0.4.173   # the ip address of the mmm monitor node
