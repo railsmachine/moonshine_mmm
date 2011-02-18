@@ -6,18 +6,30 @@ A Moonshine[http://github.com/railsmachine/moonshine] plugin for installing and 
 
 * <tt>script/plugin install git://github.com/railsmachine/moonshine_mmm.git</tt>
 * Configure settings if needed in <tt>config/moonshine.yml</tt>
-    :mmm:
-      :enabled: true
-      :monitor:   10.0.4.173   # the ip address of the mmm monitor node
-      :db1:       10.0.4.183   # the ip address of db1
-      :db2:       10.0.4.184   # the ip address of db2
-      :writer:    10.0.4.220   # the ip address of writer VIP
-      :reader:    10.0.4.221   # the ip address of reader VIP
-      :ping:      10.0.0.1     # an ip address to ping to ensure network is up before doing crazy things
-      :interface: eth1         # interface that the mmm_agent will use to connect to mysql (used to setup a mysql user)
+  :mysql
+      :mmm:
+        :enabled: true
+        :monitor:   10.0.4.173   # the ip address of the mmm monitor node
+        :db1:       10.0.4.183   # the ip address of db1
+        :db2:       10.0.4.184   # the ip address of db2
+        :writer:    10.0.4.220   # the ip address of writer VIP
+        :reader:    10.0.4.221   # the ip address of reader VIP
+        :ping:      10.0.0.1     # an ip address to ping to ensure network is up before doing crazy things
+        :interface: eth1         # interface that the mmm_agent will use to connect to mysql (used to setup a mysql user)
 * Invoke the recipe(s) in your Moonshine manifest
     recipe :mmm_agent        # on the database hosts
     recipe :mmm_monitor      # on the mmm monitor host
+
+=== MySQL Bind Address
+
+To use MMM, the bind address on your MySQL instance needs to be set to 0.0.0.0.
+To do this, MySQL needs to be restarted. If you've already configured this by
+other means, you can set this in your <tt>config/moonshine.yml</tt> and avoid
+the restart
+
+  :mysql
+      :mmm:
+        :bind_address_already_configured: true
 
 === Security
 

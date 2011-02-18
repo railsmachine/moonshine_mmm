@@ -105,12 +105,14 @@ EOF
           :owner   => 'root',
           :mode    => '640'
 
-        file '/etc/mysql/conf.d/bind_address.conf',
-          :ensure  => :present,
-          :notify  => service('mysql'),
-          :content => "bind-address = 0.0.0.0\n",
-          :owner   => 'root',
-          :mode    => '640'
+        unless mmm_options[:no_bind_address]
+          file '/etc/mysql/conf.d/bind_address.conf',
+            :ensure  => :present,
+            :notify  => service('mysql'),
+            :content => "bind-address = 0.0.0.0\n",
+            :owner   => 'root',
+            :mode    => '640'
+        end
       end
 
   end
