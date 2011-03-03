@@ -29,7 +29,7 @@ active_master_role        writer
   hosts                   db1, db2
   ips                     <%= mmm_options[:writer] %>
   mode                    exclusive
-  prefer                  db1
+<% if mmm_options[:prefer] %>  prefer                  <%= mmm_options[:prefer] %><% end %>
 </role>
 
 <role reader>
