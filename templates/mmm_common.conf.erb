@@ -1,7 +1,7 @@
 active_master_role        writer
 
 <host default>
-  cluster_interface       eth1:0
+  cluster_interface       <%= mmm_options[:cluster_interface] || 'eth1:0' %>
 
   pid_path                /var/run/mmm_agentd.pid
   bin_path                /usr/lib/mysql-mmm/
