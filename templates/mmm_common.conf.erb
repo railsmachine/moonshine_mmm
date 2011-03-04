@@ -13,27 +13,27 @@ active_master_role        writer
   agent_password          <%= database_environment[:password] %>
 </host>
 
-<host <%= db_map[:db1] %>>
+<host <%= db_map(:db1) %>>
   ip                      <%= mmm_options[:db1] %>
   mode                    master
-  peer                    <%= db_map[:db2] %>
+  peer                    <%= db_map(:db2) %>
 </host>
 
-<host <%= db_map[:db2] %>>
+<host <%= db_map(:db2) %>>
   ip                      <%= mmm_options[:db2] %>
   mode                    master
-  peer                    <%= db_map[:db1] %>
+  peer                    <%= db_map(:db1) %>
 </host>
 
 <role writer>
-  hosts                   <%= db_map[:db1] %>, <%= db_map[:db2] %>
+  hosts                   <%= db_map(:db1) %>, <%= db_map(:db2) %>
   ips                     <%= mmm_options[:writer] %>
   mode                    exclusive
 <% if mmm_options[:prefer] %>  prefer                  <%= mmm_options[:prefer] %><% end %>
 </role>
 
 <role reader>
-  hosts                   <%= db_map[:db1] %>, <%= db_map[:db2] %>
+  hosts                   <%= db_map(:db1) %>, <%= db_map(:db2) %>
   ips                     <%= mmm_options[:reader] %>
   mode                    balanced
 </role>
