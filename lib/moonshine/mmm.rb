@@ -38,8 +38,11 @@ module Moonshine
       def mmm_monitor
         mmm_common
         package 'mysql-mmm-monitor', :ensure => :installed, :provider => :dpkg, :source => "/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb", :require => [exec("/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb"),  package('mysql-mmm-common')]
-        file "/etc/default/mysql-mmm-monitor", :ensure => :present, :content => "ENABLED=1" if mmm_options[:enabled]
-        service 'mysql-mmm-monitor', :ensure => running_or_stopped, :enable => true, :require => package('mysql-mmm-monitor')
+        file "/etc/default/mysql-mmm-monitor", :ensure => :present, :content => "ENABLED=#{mmm_options[:enabled] ? 1 : 0}"
+        service 'mysql-mmm-monitor',
+          :ensure   => running_or_stopped,
+          :enable   => true,
+          :require  => [package('mysql-mmm-monitor'), file("/etc/default/mysql-mmm-monitor")]
 
         file '/etc/mysql-mmm/mmm_mon.conf',
           :ensure => :present,
@@ -96,7 +99,12 @@ EOF
           :command => mysql_query(mmm_agent_user),
           :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_ip_address}\"' mysql | grep mmm_agent",
           :require => exec('mysql_database')
-        service 'mysql-mmm-agent', :ensure => running_or_stopped, :enable => true, :require => package('mysql-mmm-agent')
+
+        service 'mysql-mmm-agent',
+          :ensure  => running_or_stopped,
+          :enable  => true,
+          :require => [package('mysql-mmm-agent'),file("/etc/default/mysql-mmm-monitor")]
+
         file '/etc/mysql-mmm/mmm_common.conf',
           :ensure => :present,
           :notify => service('mysql-mmm-agent'),
