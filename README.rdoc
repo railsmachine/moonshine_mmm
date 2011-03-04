@@ -16,6 +16,12 @@ A Moonshine[http://github.com/railsmachine/moonshine] plugin for installing and 
         :reader:    10.0.4.221   # the ip address of reader VIP
         :ping:      10.0.0.1     # an ip address to ping to ensure network is up before doing crazy things
         :interface: eth1         # interface that the mmm_agent will use to connect to mysql (used to setup a mysql user)
+* If your dbs aren't named db1, and db2, denote which one is which like so:
+    :mysql
+      :mmm:
+        :db_map:
+          :db1: guinness
+          :db2: dales
 * Invoke the recipe(s) in your Moonshine manifest
     recipe :mmm_agent        # on the database hosts
     recipe :mmm_monitor      # on the mmm monitor host

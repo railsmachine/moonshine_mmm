@@ -9,6 +9,14 @@ module Moonshine
         @options
       end
 
+      def db_map(key)
+        if mmm_options[:db_map]
+          mmm_options[:db_map][key]
+        else
+          key
+        end
+      end
+
       def running_or_stopped
         mmm_options[:enabled] ? :running : :stopped
       end
