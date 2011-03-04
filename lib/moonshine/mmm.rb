@@ -9,6 +9,10 @@ module Moonshine
         @options
       end
 
+      def running_or_stopped
+        mmm_options[:enabled] ? :running : :stopped
+      end
+
       def mmm_ip_address
         Facter.send("ipaddress_#{mmm_options[:interface]}")
       end
@@ -35,7 +39,7 @@ module Moonshine
         mmm_common
         package 'mysql-mmm-monitor', :ensure => :installed, :provider => :dpkg, :source => "/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb", :require => [exec("/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb"),  package('mysql-mmm-common')]
         file "/etc/default/mysql-mmm-monitor", :ensure => :present, :content => "ENABLED=1" if mmm_options[:enabled]
-        service 'mysql-mmm-monitor', :ensure => :running, :enable => true, :require => package('mysql-mmm-monitor')
+        service 'mysql-mmm-monitor', :ensure => running_or_stopped, :enable => true, :require => package('mysql-mmm-monitor')
 
         file '/etc/mysql-mmm/mmm_mon.conf',
           :ensure => :present,
@@ -68,7 +72,8 @@ FLUSH PRIVILEGES;
 EOF
         exec "mmm_monitor_user",
           :command => mysql_query(mmm_monitor_user),
-          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_options[:monitor]}\"' mysql | grep mmm_monitor"
+          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_options[:monitor]}\"' mysql | grep mmm_monitor",
+          :require => exec('mysql_database')
         mmm_monitor_agent_user = <<EOF
 GRANT REPLICATION CLIENT
 ON *.* 
@@ -78,7 +83,8 @@ FLUSH PRIVILEGES;
 EOF
         exec "mmm_monitor_agent_user",
           :command => mysql_query(mmm_monitor_agent_user),
-          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_options[:monitor]}\"' mysql | grep mmm_agent"
+          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_options[:monitor]}\"' mysql | grep mmm_agent",
+          :require => exec('mysql_database')
         mmm_agent_user = <<EOF
 GRANT SUPER, REPLICATION CLIENT, PROCESS
 ON *.*
@@ -88,8 +94,9 @@ FLUSH PRIVILEGES;
 EOF
         exec "mmm_agent_user",
           :command => mysql_query(mmm_agent_user),
-          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_ip_address}\"' mysql | grep mmm_agent"
-        service 'mysql-mmm-agent', :ensure => :running, :enable => true, :require => package('mysql-mmm-agent')
+          :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_ip_address}\"' mysql | grep mmm_agent",
+          :require => exec('mysql_database')
+        service 'mysql-mmm-agent', :ensure => running_or_stopped, :enable => true, :require => package('mysql-mmm-agent')
         file '/etc/mysql-mmm/mmm_common.conf',
           :ensure => :present,
           :notify => service('mysql-mmm-agent'),
