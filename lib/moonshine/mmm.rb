@@ -113,7 +113,7 @@ EOF
           :mode    => '640'
 
         unless mmm_options[:bind_address_already_configured]
-          file '/etc/mysql/conf.d/bind_address.conf',
+          file '/etc/mysql/conf.d/bind_address.cnf',
             :ensure  => :present,
             :notify  => service('mysql'),
             :content => "bind-address = 0.0.0.0\n",
