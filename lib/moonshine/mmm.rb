@@ -52,9 +52,10 @@ module Moonshine
         mmm_common
         package 'mysql-mmm-monitor', :ensure => :installed, :provider => :dpkg, :source => "/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb", :require => [exec("/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb"),  package('mysql-mmm-common')]
         service 'mysql-mmm-monitor',
-          :ensure   => running_or_stopped,
-          :enable   => true,
-          :require  => [package('mysql-mmm-monitor'), file("/etc/default/mysql-mmm-monitor")]
+          :ensure    => running_or_stopped,
+          :enable    => true,
+          :hasstatus => true,
+          :require   => [package('mysql-mmm-monitor'), file("/etc/default/mysql-mmm-monitor")]
 
         file '/etc/mysql-mmm/mmm_mon.conf',
           :ensure => :present,
@@ -113,9 +114,10 @@ EOF
           :require => exec('mysql_database')
 
         service 'mysql-mmm-agent',
-          :ensure  => running_or_stopped,
-          :enable  => true,
-          :require => [package('mysql-mmm-agent'),file("/etc/default/mysql-mmm-monitor")]
+          :ensure    => running_or_stopped,
+          :enable    => true,
+          :hasstatus => true,
+          :require   => [package('mysql-mmm-agent'),file("/etc/default/mysql-mmm-monitor")]
 
         file '/etc/mysql-mmm/mmm_common.conf',
           :ensure => :present,
