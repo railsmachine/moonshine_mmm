@@ -33,12 +33,16 @@ module Moonshine
             :cwd     => "/usr/local/src",
             :require => package("wget")
         end
+        file "/etc/default/mysql-mmm-monitor",
+          :ensure  => :present,
+          :content => "ENABLED=#{mmm_options[:enabled] ? 1 : 0}",
+          :require => package('mysql-mmm-common')
+
       end
 
       def mmm_monitor
         mmm_common
         package 'mysql-mmm-monitor', :ensure => :installed, :provider => :dpkg, :source => "/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb", :require => [exec("/usr/local/src/mysql-mmm-monitor_2.2.1-1_all.deb"),  package('mysql-mmm-common')]
-        file "/etc/default/mysql-mmm-monitor", :ensure => :present, :content => "ENABLED=#{mmm_options[:enabled] ? 1 : 0}"
         service 'mysql-mmm-monitor',
           :ensure   => running_or_stopped,
           :enable   => true,
