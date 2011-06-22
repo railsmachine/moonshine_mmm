@@ -138,7 +138,7 @@ EOF
           file '/etc/mysql/conf.d/bind_address.cnf',
             :ensure  => :present,
             :notify  => service('mysql'),
-            :content => "bind-address = 0.0.0.0\n",
+            :content => "[mysqld]\nbind-address = 0.0.0.0\n",
             :owner   => 'root',
             :mode    => '640'
         end
