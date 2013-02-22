@@ -113,6 +113,22 @@ EOF
           :unless  => "mysql -u root -e ' select User from user where Host = \"#{mmm_ip_address}\"' mysql | grep mmm_agent",
           :require => exec('mysql_database')
 
+        (mmm_options[:allowed_replication_hosts] || []).each do |host|
+          replication_user = <<EOF
+GRANT REPLICATION SLAVE
+ON *.*
+TO repl@#{host}
+IDENTIFIED BY \\"#{database_environment[:password]}\\";
+FLUSH PRIVILEGES;
+EOF
+
+          exec "#{host}_replication_mysql_user",
+          :command => mysql_query(replication_user),
+          :unless  => "mysql -u root -e ' select User from user where Host = \"#{host}\"' mysql | grep repl",
+          :require => exec('mysql_database'),
+          :before => exec('rake tasks')
+      end
+
         service 'mysql-mmm-agent',
           :ensure    => running_or_stopped,
           :enable    => true,
