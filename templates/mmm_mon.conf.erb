@@ -7,7 +7,7 @@ include mmm_common.conf
         status_path          /var/lib/misc/mmm_mond.status
         ping_ips             <%= mmm_options[:db1] %>, <%= mmm_options[:db2] %>, <%= mmm_options[:ping] %>
         mode                 <%= mmm_options[:mode] || 'active' %>
-        auto_set_online      <%= mmm_options[:auto_set_online] || 0 %>
+        auto_set_online      <%= mmm_options[:auto_set_online] || 10 %>
 </monitor>
 
 <host default>
