@@ -2,6 +2,9 @@
 
 A [Moonshine](http://github.com/railsmachine/moonshine) plugin for installing and managing [mysql_mmm](http://mysql-mmm.org).
 
+
+## We strongly recommend using [MariaDB Galera Cluster](http://github.com/railsmachine/moonshine_mariadb) instead of mmm.
+
 ### Instructions
 
 - <tt>script/plugin install git://github.com/railsmachine/moonshine_mmm.git</tt>
