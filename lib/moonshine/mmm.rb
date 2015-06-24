@@ -22,7 +22,7 @@ module Moonshine
       end
 
       def mmm_ip_address
-        Facter.send("ipaddress_#{mmm_options[:interface]}")
+        Facter.value("ipaddress_#{mmm_options[:interface]}".to_sym)
       end
 
       def mmm_common()
@@ -81,7 +81,7 @@ module Moonshine
         file "/etc/default/mysql-mmm-agent", :ensure => :present, :content => "ENABLED=1" if mmm_options[:enabled]
         mmm_monitor_user = <<EOF
 GRANT REPLICATION CLIENT
-ON *.* 
+ON *.*
 TO mmm_monitor@#{mmm_options[:monitor]}
 IDENTIFIED BY \\"#{database_environment[:password]}\\";
 FLUSH PRIVILEGES;
@@ -92,7 +92,7 @@ EOF
           :require => exec('mysql_database')
         mmm_monitor_agent_user = <<EOF
 GRANT REPLICATION CLIENT
-ON *.* 
+ON *.*
 TO mmm_agent@#{mmm_options[:monitor]}
 IDENTIFIED BY \\"#{database_environment[:password]}\\";
 FLUSH PRIVILEGES;

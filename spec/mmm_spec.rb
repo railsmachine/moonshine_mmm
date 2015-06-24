@@ -16,7 +16,7 @@ describe "A manifest with the Mmm plugin" do
   end
 
   it 'should have a convenience method for the ip address' do
-    @manifest.mmm_ip_address.should == Facter.send("ipaddress_en1")
+    @manifest.mmm_ip_address.should == Facter.value(:ipaddress_en1)
   end
 
   describe 'monitor role' do
@@ -58,7 +58,7 @@ describe "A manifest with the Mmm plugin" do
     end
 
     it 'should configure the agent with the proper hostname' do
-      @manifest.files["/etc/mysql-mmm/mmm_agent.conf"].content.should match /#{Facter.hostname}/
+      @manifest.files["/etc/mysql-mmm/mmm_agent.conf"].content.should match /#{Facter.value(:hostname)}/
     end
 
     it 'should notify the agent of changes to common config' do
