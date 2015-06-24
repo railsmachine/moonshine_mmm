@@ -1,2 +1,2 @@
 include mmm_common.conf
-this <%= Facter.hostname %>
+this <%= Facter.value(:hostname) %>
